@@ -1,0 +1,307 @@
+/*
+  Hello!
+  This would be a good place to put some base styles for your website.
+  Or do something different, I don't care :)
+*/
+
+/* CONFIG ****************************************************************************************/
+
+:root {
+  --white: #EFEBE3;
+  --black: #3D3832;
+  --page-width: 768px;
+}
+
+/* TYPOGRAPHY ************************************************************************************/
+
+h1      { font: 400 80px / 1 "Sutherland", sans-serif; }
+h2      { font: 400 19px / 24px "Libre Caslon Text", serif; }
+h3      { font: 700 16px / 24px "Libre Caslon Text", serif; }
+body    { font: 400 16px / 24px "Libre Caslon Text", serif; }
+nav em  { font: 700 20px / 24px "Sutherland", serif; }
+aside a { font: 700 18px / 24px "Sutherland", serif; }
+
+/* Our main text font */
+@font-face { font-family: "Libre Caslon Text"; src: url("/static/fonts/LibreCaslonText-Bold.woff2"); font-weight: 700; }
+@font-face { font-family: "Libre Caslon Text"; src: url("/static/fonts/LibreCaslonText-Italic.woff2"); font-style: italic; }
+@font-face { font-family: "Libre Caslon Text"; src: url("/static/fonts/LibreCaslonText-Regular.woff2"); }
+
+/* A (bad) conversion of the Sketchpad font */
+@font-face { font-family: "Sutherland"; src: url("/static/fonts/sutherland.woff2"); }
+
+/* Potentially useful, presently unused */
+@font-face { font-family: "IBM Plex Sans"; src: url("/static/fonts/IBMPlexSansVar-Italic.woff2"); font-weight: 100 700; font-stretch: 75% 100%; font-style: italic; }
+@font-face { font-family: "IBM Plex Sans"; src: url("/static/fonts/IBMPlexSansVar-Roman.woff2"); font-weight: 100 700; font-stretch: 75% 100%; }
+@font-face { font-family: "Lincoln MITRE LM"; src: url("/static/fonts/LincolnMITRE-LM.woff"); }
+@font-face { font-family: "Lincoln MITRE LM57"; src: url("/static/fonts/LincolnMITRE-LM5x7.woff"); }
+@font-face { font-family: "Lincoln MITRE LM79"; src: url("/static/fonts/LincolnMITRE-LM7x9.woff"); }
+@font-face { font-family: "Lincoln MITRE Stencil"; src: url("/static/fonts/LincolnMITRE-LMStencil.woff"); }
+
+/* ELEMENTS **************************************************************************************/
+
+/* Box sizing reset */
+*, *:before, *:after { box-sizing: border-box; }
+
+/* MAJOR LAYOUT ELEMENTS */
+
+html {
+  color: var(--black);
+
+  /* This needs to be here — redundantly with body below — so that short pages don't reveal a white background */
+  background: var(--white);
+
+  /* Long words may be broken and wrapped. (NB: this doesn't affect min-content size) */
+  overflow-wrap: break-word;
+
+  /* Prevent inflated text when a phone is in landscape. */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+body {
+  margin: 0;
+
+  /* This needs to be here — redundantly with html above — to make mix-blend-mode work */
+  background: var(--white);
+
+  /* Don't let the honeycomb blow out the page width */
+  contain: paint;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  padding-top: 2rem;
+  height: 13em;
+  text-align: center;
+  color: var(--white);
+  background: url("/assets/texture.webp") center / 717px var(--black);
+
+  i {
+    display: inline-block;
+    font-size: .9em;
+    margin-inline: .3em;
+  }
+
+  span {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><path d='M6.75 2 V17 M0 9.5 H13' stroke='%23EFEBE3' stroke-linecap='round'/></svg>") left no-repeat;
+  }
+}
+
+section {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 1em;
+}
+
+/* Use <section> to group discrete sections of content on a page */
+section + section {
+  margin-top: 3rem;
+}
+
+h1 { margin-block: .5rem 1rem; }
+h2 { margin-block: 0 1rem; }
+h3 { margin-block: 0; }
+p  { margin-block: 0 1rem; }
+
+h2 {
+  border-bottom: 2px solid currentColor;
+}
+
+aside {
+  font-size: .7em;
+  line-height: 1.2;
+  float: right;
+  max-width: 12em;
+  clear: right;
+  margin-left: 1em;
+  margin-top: .5em;
+}
+
+small {
+  display: block;
+  margin-bottom: 1em;
+}
+
+a {
+  color: inherit;
+  border-radius: 2px; /* for links with backgrounds, and for the focus outline */
+}
+
+a:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* INDEX *****************************************************************************************/
+
+#intro {
+  max-width: 36em;
+  margin: 3rem 0;
+  font-style: italic;
+  text-align: center;
+  margin-inline: auto;
+  img { mix-blend-mode: darken; }
+}
+
+#wayfinding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2em;
+
+  a { text-decoration: none }
+  a:hover { background: #0001 }
+  a:focus { outline-offset: -1px }
+
+  nav {
+    flex: 0 1 20em;
+
+    a {
+      display: grid;
+      grid-template-areas:
+        "title icon"
+        "text  icon";
+      grid-template-columns: 1fr auto;
+      gap: 0 1rem;
+      padding: 1rem .5rem;
+      margin-left: -.5rem;
+      margin-right: -.5rem;
+
+      em { grid-area: title }
+      .img { grid-area: icon }
+      span { grid-area: text }
+
+      em {
+        margin-bottom: .1rem;
+      }
+
+      .img {
+        width: 2rem;
+        height: 2rem;
+        border: 2px solid currentColor;
+        border-radius: 2px;
+        padding: .4em;
+      }
+    }
+  }
+
+  aside {
+    flex: 0 1 21em;
+    position: relative;
+    border: 2px solid currentColor;
+    padding: 1em;
+    background: var(--white);
+
+    h2 {
+      max-width: max-content;
+    }
+
+    p {
+      margin-block: 1em 2em;
+    }
+
+    a {
+      position: relative;
+      display: block;
+      max-width: max-content;
+      padding: .5rem;
+      padding-bottom: .1rem; /* the Sutherland font has weird metrics */
+
+      /* placeholder for icon */
+      &:before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        margin-right: .3em;
+        border: 2px solid currentColor;
+        border-radius: 2px;
+      }
+    }
+
+    #start-here {
+      position: absolute;
+      left: 100%;
+      bottom: -.5em;
+    }
+
+    /* Honeycomb */
+    &::before {
+      content: "";
+      position: absolute;
+      top: -4em;
+      left: 0;
+      width: calc(100% + 12em);
+      height: calc(100% + 8em);
+      background: url("/assets/honeycomb.webp") center / contain no-repeat;
+      mix-blend-mode: darken;
+      opacity: .2;
+      z-index: -1;
+    }
+  }
+}
+
+@media (width < 600px) {
+  #wayfinding {
+    flex-flow: column;
+
+    nav {
+      align-self: stretch;
+    }
+
+    aside p {
+      max-width: 15em;
+    }
+  }
+}
+
+/* Temp: this is the navbar on non-index pages */
+body > nav {
+  display: flex;
+  max-width: var(--page-width);
+  margin-inline: auto;
+  gap: 1rem;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  padding: 1rem 1rem 1.5rem;
+  background: url("/assets/dots.png") bottom / 50% repeat-x;
+  margin-bottom: .5rem;
+
+  a {
+    display: inline-block;
+    padding: .2rem .1rem 0 .2rem;
+    text-decoration: none;
+  }
+  a:hover { background: #0001 }
+
+  .img {
+    display: inline-block;
+    width: 1.3rem;
+    height: 1.3rem;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+    margin-bottom: -.15rem;
+    margin-right: .2rem;
+  }
+}
+
+.tracking {
+  display: block;
+  width: max-content;
+  margin: 2rem auto 0;
+  width: 200px;
+}
+
+.aside {
+  float: right;
+  mix-blend-mode: multiply;
+  width: 320px;
+  margin-left: .5em;
+}
