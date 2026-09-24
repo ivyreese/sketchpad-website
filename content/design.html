@@ -4,9 +4,22 @@ page-description: The technical innovations and<br> design decisions inside Sket
 ---
 
 <section>
+  <p>Sketchpad was far ahead of its time in many ways, and thus required innovation in a wide range of areas. From the viewpoint of someone reading Ivan's dissertation over 60 years after it was written, the dissertation presents a curious mixture of material that still bears close study today, and other material that describes by-now-standard techniques or ones that have been superseded by subsequent ones. For example, Chapter 7 (Constraint Satisfaction) still bears close study for its elegant representation of a powerful concept (constraints) using error functions, and their satisfaction by a very general search technique (relaxation). On the other hand, Chapter 3 (Ring Structure) describes the ring data structure — a doubly-linked, circular list — that was used throughout the implementation, and that might well appear in a standard data structures textbook (although in a reimplementation today, we would probably replace it with something simpler such as an array or an ordinary list).</p>
+</section>
+
+<section>
+  <h2>User Interface</h2>
+
+  <p>Sketchpad was one of the first graphical user interfaces, and pioneered many of the techniques that constitute what we now call direct manipulation, including selecting objects with a pointing device, moving them, creating new ones, and deleting them. For Sketchpad the display was a 9 inch cathode ray tube, driven directly from the TX-2, and the pointing device was a light pen, augmented with a generous collection of switches and knobs for input. Today these would typically be a flat screen with a mouse, or a pen-based interface using a tablet, often with just a single button. Chapter 4 and 5 of the dissertation (Light Pen, Display Generation) describe the hardware and routines that supported displaying pictures, and the basics of selecting and moving parts. Sketchpad differentiated between world coordinates and display coordinates, so that the user could pan or zoom in or out, controlled by the TX-2's switches and knobs.</p>
+
+  <p>Many of the UI operations were recursive: for example, moving a complex object required moving all of its parts and subparts, deleting an object (for example a point) also required deleting the lines that terminated on it, and making a copy of an object required copying all of its parts and subparts. A less familiar (but important) operation was that of recursively merging two objects, including all their parts, subparts, constraints, and connectivity information.</p>
+</section>
+
+<section>
   <h2>Constraints</h2>
 
-  <p>One of the key innovations in Sketchpad is the use of constraints to specify how the different graphical elements in a picture — lines, arcs, points, and so on — should be positioned relative to one another. As illustrated by the interactive Sketchpad re-implementation shown in the Sketchpad Demo section, these constraints are not simply static descriptions, but dynamic — the system readjusts the picture as needed to keep the constraints satisfied.</p>
+  <p>One of the key innovations in Sketchpad is the use of constraints to specify how the different graphical elements in a picture — lines, arcs, points, and so on — should be positioned relative to one another. As illustrated by the interactive Sketchpad re-implementation shown in the <a href="/tour">Sketchpad Demo</a> section, these constraints are not simply static descriptions, but dynamic — the system readjusts the picture as needed to keep the constraints satisfied.</p>
+
   <p>Here are examples of Sketchpad constraints:</p>
 
   <ul>
@@ -16,42 +29,47 @@ page-description: The technical innovations and<br> design decisions inside Sket
     <li>Two points should have the same x and y coordinates</li>
   </ul>
 
-  <aside>Alex Warth wants to talk about how the error needs to be scaled — Ivy insists that it's one or two sentences max, succinct, mindful of the wide audience of this website! Also, Alex will double check the thesis to make sure that this stuff actually happened in Sketchpad, so we're not pulling ideas from later works and talking about them as if they happened in the original Sketchpad.</aside>
+  <aside>[MIGHT BE ADDRESSED] Alex Warth wants to talk about how the error needs to be scaled — Ivy insists that it's one or two sentences max, succinct, mindful of the wide audience of this website! Also, Alex will double check the thesis to make sure that this stuff actually happened in Sketchpad, so we're not pulling ideas from later works and talking about them as if they happened in the original Sketchpad.</aside>
 
-  <p>A constraint in Sketchpad is represented by an error function whose value is 0 if the constraint is satisfied. (1) Importantly, the value of the error function is not simply 0 if the constraint is satisfied and 1 if it is not, but instead becomes larger the "less satisfied" is the constraint. So the error for a horizonal line constraint is just the difference between the y values of the two endpoints of the line. If the line is exactly horizontal, the y values will be the same and the error will be 0; the further it is from being horizontal the larger will be the difference in the y values. Similarly, the error for a point-on-line constraint is the distance from the point to the nearest position on the line.</p>
+  <p>A constraint in Sketchpad is represented by an error function whose value is 0 if the constraint is satisfied.<sup>1</sup> Importantly, the value of the error function is not simply 0 if the constraint is satisfied and 1 if it is not, but instead becomes larger the "less satisfied" is the constraint.  So the error for a horizontal line constraint is just the difference between the y values of the two endpoints of the line. If the line is exactly horizontal, the y values will be the same and the error will be 0; the further it is from being horizontal the larger will be the difference in the y values. Similarly, the error for a point-on-line constraint is the distance from the point to the nearest position on the line.</p>
 
-  <small>(1) A technical point: actually a constraint that removes one degree of freedom is represented by an error function, as noted above; but a constraint that removes two degrees of freedom is represented using two different error functions. For example, a constraint that two points have the same x and y coordinates removes two degrees of freedom and would have two error functions, one for the x coordinates and one for the y coordinates.</small>
+  <small><sup>1</sup> A technical point: a constraint that removes one degree of freedom is represented by an error function, as noted above; but in Sketchpad a constraint that removes two degrees of freedom is represented using two different error functions. For example, a constraint that two points have the same x and y coordinates removes two degrees of freedom and would have two error functions, one for the x coordinates and one for the y coordinates. (As an aside, Ivan's dissertation states that neglecting to provide two error functions in such an example will lead to erratic results, but in our own reimplementations of relaxation and graphical constraints, we did not find this to be the case.)</small>
 
   <p>Figure 1 provides a demonstration of error functions for constraints. The line in the figure is constrained to be horizontal. We're not enforcing this constraint (yet), just displaying its error. Try moving either of the line's endpoints, and notice what happens with the error.</p>
 
   <h3>FIGURE 1</h3>
-  <small>[Figure 1 - interactive demo here with a line that starts out slightly tilted, and with a numerical display of the error. The user can move either endpoint and the error display is updated]</small>
+  <small>[Interactive demo here with a line that starts out slightly tilted, and with a numerical display of the error. The user can move either endpoint and the error display is updated]</small>
 
   <p>As a second example, Figure 2 is a similar demonstration of a point-on-line constraint.</p>
 
   <h3>FIGURE 2</h3>
-  <small>[Figure 2 - interactive demo here with a line and a point, and with a numerical display of the error for the point-on-line constraint]</small>
+  <small>[Interactive demo here with a line and a point, and with a numerical display of the error for the point-on-line constraint]</small>
 
   <p>Here are three key benefits of this way of representing constraints:</p>
   <ol>
-    <li>It doesn't say anything about how to satisfy the constraint or how it interacts with other constraints; it just describes the constraint.</li>
+    <li>It doesn't say anything about <em>how</em> to satisfy the constraint or how it interacts with other constraints; it just describes the constraint.</li>
     <li>The use of the error function means that Sketchpad can handle inconsistent constraints in a reasonable way, by trying to minimize the overall error, rather than just failing. This error function will also prove critical for the constraint solver.</li>
     <li>The simplicity of this representation made it very easy for Ivan to add additional constraints to Sketchpad.</li>
   </ol>
+</section>
 
+<section>
   <h2>Constraint Satisfaction</h2>
-  <aside>Alex Warth wants to talk about how we don't update the value of the variable such that the error is minimized in one step. We do it a little at a time, to prevent wild oscillation while the solver is working. Again, Alex will find a succinct way to say this and (crucially) see if he can find any reference to how Ivan actually tackled this problem in Sketchpad</aside>
-  <p>Given a set of constraints, Sketchpad needs a way to find a solution to them. The principal workhorse for this is relaxation, a technique that was originally developed in the pre-computer era for various engineering applications, such as analyzing loads in truss networks. Here's how it  works in Sketchpad. We consider each of the constrained variables in the picture, one at a time. For each variable, we try to find a new value that (approximately) minimizes the sum of the squares of the errors on that variable. We go through all the variables, and then repeat. Keep going until there is a negligible change in the overall error.</p>
 
+  <aside>[MIGHT BE ADDRESSED] Alex Warth wants to talk about how we don't update the value of the variable such that the error is minimized in one step. We do it a little at a time, to prevent wild oscillation while the solver is working. Again, Alex will find a succinct way to say this and (crucially) see if he can find any reference to how Ivan actually tackled this problem in Sketchpad</aside>
+
+  <p>Given a set of constraints, Sketchpad needs a way to find a solution to them. The principal workhorse for this is relaxation, a technique that was originally developed in the pre-computer era for various engineering applications, such as analyzing loads in truss networks. Here's how it  works in Sketchpad. We consider each of the constrained variables in the picture, one at a time. For each variable, we try to find a new value that (approximately) minimizes the sum of the squares of the errors on that variable.<sup>2</sup>  We go through all the variables, and then repeat. Keep going until there is a negligible change in the overall error.</p>
+
+  <small><sup>2</sup> Sketchpad uses a general method for finding the least mean squares fit to a set of constraints that expects a linear equation for each constraint, but Sketchpad's constraints might be nonlinear. So Sketchpad computes a linear approximation for each constraint by numerically computing its derivative close to the current values of its variables. This linear approximation will usually be reasonably accurate for values close to the current ones, but less accurate for more distant values. So in our own reimplementation of Sketchpad-style relaxation, we found that relaxation behaved more reliably if it takes smaller steps toward the desired new value for a variable, rather than attempting to jump there immediately, even though this requires more iterations.</small>
 
   <p>Figure 3 demonstrates this process. Each of the lines in the hexagon is constrained to have equal length, and their endpoints are constrained to lie on a hidden circle. Click on the figure. Each time you click, the demo picks the next point to relax, and finds a new position for it that minimizes the errors in its constraints. By the time you've clicked once for each point, though, the solution found for the first point no longer minimizes the errors, since the other points have moved since!  So keep iterating (clicking) until the points no longer move. (The hexagon is one of the examples in Chapter 1 of Ivan's dissertation.)</p>
 
   <h3>FIGURE 3</h3>
-  <small>[Figure 3 - interactive demo here with honeycomb figure that starts out with irregular lengths for each of the lines. On each click, highlight one of the points and animate moving it to the solution that minimizes the errors just for that point.]</small>
+  <small>[Interactive demo here with honeycomb figure that starts out with irregular lengths for each of the lines. On each click, highlight one of the points and animate moving it to the solution that minimizes the errors just for that point.]</small>
 
-  <p>Relaxation was a slow algorithm when implemented on the TX-2. In response, Ivan also implemented the one-pass method. For this method, Sketchpad tries to find an order in which to compute the values of the variables in a drawing in just one pass; if it can do that, constraint satisfaction is much much faster. To do this, Sketchpad looks for a variable v1 that has so few constraints on it that a new value for it can be found that satisfies all those constraints. Ivan calls this a "free" variable. We can then temporarily ignore those constraints since we know we can satisfy them by computing a new value for v1. This may let Sketchpad identify a second variable v2 as free, and so on through vn. Then, to satisfy all the constraints, Sketchpad determines the values of the variables in the reverse order: first vn, then vn-1, and so forth through v1.</p>
+  <p>Relaxation was a slow algorithm when implemented on the TX-2. In response, Ivan also implemented the one-pass method. For this method, Sketchpad tries to find an order in which to compute the values of the variables in a drawing in just one pass; if it can do that, constraint satisfaction is much much faster. To do this, Sketchpad looks for a variable v<sub>1</sub> that has so few constraints on it that a new value for it can be found that satisfies all those constraints. Ivan calls this a "free" variable. We can then temporarily ignore those constraints since we know we can satisfy them by computing a new value for v<sub>1</sub>. This may let Sketchpad identify a second variable v<sub>2</sub> as free, and so on through v<sub>n</sub>. Then, to satisfy all the constraints, Sketchpad determines the values of the variables in the reverse order: first v<sub>n</sub>, then v<sub>n-1</sub>, and so forth through v<sub>1</sub>.</p>
 
-  <p>Figures 4 and 5 demonstrate the one-pass method and its benefits. Both figures consist of a chain of lines, each constrained to have a given length. The endpoint of the last line  (p6) is constrained to be at a fixed location. However, Figure 4 uses relaxation, and Figure 5 uses the one-pass method to satisfy the constraints. Try clicking repeatedly in Figure 4. On each click, the demonstration will find a new position for a point that minimizes the errors for the constraints on that particular point. The demonstration will converge on a solution, but it takes many clicks. Now try clicking on Figure 5 — for that figure, we found an order in which to compute the point positions that let the system compute their positions in one pass, namely p6, p5, p4, p3, p2, and finally p1.</p>
+  <p>Figures 4 and 5 demonstrate the one-pass method and its benefits. Both figures consist of a chain of lines, each constrained to have a given length. The endpoint of the last line  (p<sub>6</sub>) is constrained to be at a fixed location. However, Figure 4 uses relaxation, and Figure 5 uses the one-pass method to satisfy the constraints. Try clicking repeatedly in Figure 4. On each click, the demonstration will find a new position for a point that minimizes the errors for the constraints on that particular point. The demonstration will converge on a solution, but it takes many clicks. Now try clicking on Figure 5 — for that figure, we found an order in which to compute the point positions that let the system compute their positions in one pass, namely p<sub>6</sub>, p<sub>5</sub>, p<sub>4</sub>, p<sub>3</sub>, p<sub>2</sub>, and finally p<sub>1</sub>.</p>
 
   <h3>FIGURE 4</h3>
   <h3>FIGURE 5</h3>
@@ -59,38 +77,48 @@ page-description: The technical innovations and<br> design decisions inside Sket
 </section>
 
 <section>
-  <h2>Merging</h2>
-  <p>Sketchpad supports a "merge" operation that allows two objects of the same type to be combined into a single object. For example, suppose we have a line segment with endpoints p1 and p2, and another with endpoints q1 and q2. We then merge p1 and q1, so that they are replaced with a single point. Thereafter the line two line segments are connected.</p>
-
-  <p>Merging p1 and q1 is similar in many respects to constraining p1 and q1 to be equal, but there are some important differences. Pragmatically, merging significantly simplifies constraint solving, since there are fewer constraints to be solved. It also reduces storage requirements. The semantics are different as well: if there is an unsatisfied constraint on each of the objects being merged, after merging there will be only one unsatisfied constraint contributing to the combined error; whereas if the two objects were constrained to be equal rather than merged, there would be two such constraints. Further, if the merged point p1/q1 were deleted, this would require that both lines be deleted; but this wouldn't be the case if they were just constrained to be equal.</p>
-
-  <p>Merging doesn't apply only to points -- other Sketchpad objects could be merged as well, for example two lines or two arcs. Merging is recursive, so that if two line segments are merged, their corresponding endpoints are merged as well.</p>
-</section>
-
-<section>
   <h2>Making Multiple Drawings from an Original</h2>
-  <p>Sketchpad provides two distinct ways to make multiple drawings from an original: one is copying; the other is defining a master and making instance of that master.</p>
+  <p>Sketchpad provides two distinct ways to make multiple drawings from an original: one is copying; the other is defining a master and making instances of that master.</p>
 
   <h3>Copies</h3>
   <p>When a drawing is copied, the copy has duplicates of all of the points, lines, constraints, and so on that were in the original. The copy has the same topology as the original, so that for example if two line segments share a common endpoint in the original, the copies will as well. Once the copy is made, the original and the copy have no further connection. The user can make further edits to the original, with no effect on the copy; and can also make edits to the copy with no effect on the original.</p>
 
+  <p>To allow a copy to be connected with other parts of the overall drawing, one or more objects in the picture can be designated as attachers. When inserting a copy, Sketchpad lets the user position each attacher, potentially merging it with an existing object in the new picture. Attachers will often be points, but can be other kinds of objects as well.</p>
+
   <p>Copying thus provides total flexibility, but without the ability to have changes in the original reflected in the copies. The copy also requires just as much storage as the original (and remember, storage was at a premium on the TX-2).</p>
 
   <h3>Masters and Instances.</h3>
-  <p>Sketchpad provides another way to make multiple drawings from an original: by declaring the original to be a master. Once this is done, as many instances of the master as needed can be created. The internal structure and shape of an instance is completely fixed:  the instance can be translated, rotated, and scaled, but otherwise not changed. However, in contrast to copies, an instance retains a connection to its master, so that if the master is updated, the instance is immediately updated as well.</p>
+  <p>Sketchpad provides another way to make multiple drawings from an original: by declaring the original to be a master. Once this is done, as many instances of the master as needed can be created. The internal structure and shape of an instance is completely fixed:  the instance can be translated, rotated, and scaled, but otherwise not changed. However, in contrast to copies, an instance retains a connection to its master, so that if the master is updated, the instance is immediately updated as well.<sup>3</sup></p>
 
-  <p>To allow instances to be connected somehow to other parts of the overall drawing, one or more points in the master can be designated as attachers. When making an instance of the master, Sketchpad also creates copies of the attacher points. These will be real points in Sketchpad's memory, and can be constrained or merged with other points in the diagram. However, the attacher points are also automatically given constraints that each attacher point in the instance must have the same relation to the position of the instance as does the corresponding attacher in the master. Other kinds of objects, for example lines, can be designated as attachers as well.</p>
+  <small><sup>3</sup> Sketchpad also provides a "dismember" operation that allows the user to replace an instance with its component parts. So technically we don't actually need both the copy and dismember operations. One could only make instances and dismember them, and dispense with a separate copy operation; or instead delete an instance that would be dismembered and insert a copy. For convenience though Sketchpad provides both.</small>
+
+  <p>As with copying, one or more points in the master can be designated as attachers. (For masters, the attachers can only be points though.)  When making an instance of the master, Sketchpad also creates copies of the attacher points. These will be real points in Sketchpad's memory, and can be constrained or merged with other points in the diagram. However, the attacher points are also automatically given constraints that each attacher point in the instance must have the same relation to the position of the instance as does the corresponding attacher in the master.</p>
 
   <p>In terms of storage requirements, an instance only requires a fixed amount of storage to store the translation, rotation, and scaling information, plus storage for the attachers, no matter how complex is the master.</p>
 
   <small>
-    [Figures n and n+1 - Figure n consists of the traditional Sketchpad rivet. There is a "copy" button that makes a copy of the rivet. The reader can then experiment with moving either the original and the copy - the caption should point out that they are independent. Figure n+1 is the same, except that there is an "instantiate" button that makes an instance of the rivet.] Note that these figures don't demonstrate attachers though.
+    [Figures n and n+1 — Figure n consists of the traditional Sketchpad rivet. There is a "copy" button that makes a copy of the rivet. The reader can then experiment with moving either the original and the copy — the caption should point out that they are independent. Figure n+1 is the same, except that there is an "instantiate" button that makes an instance of the rivet.]
+    [Note that these figures don't demonstrate attachers though.]
   </small>
 
   <small>
-    ps - somewhere we should discuss the relation between masters and instances as in Sketchpad, and classes and instances in object-oriented programming (and for a more closely related concept, with prototypes and instances as in Self or Javascript).  I didn't put that with these paragraphs though -- it would seem to fit better in a section on subsequent work that builds on Sketchpad.
+    [ps - somewhere we should discuss the relation between masters and instances as in Sketchpad, and classes and instances in object-oriented programming (and for a more closely related concept, with prototypes and instances as in Self or Javascript). I didn't put that with these paragraphs though -- it would seem to fit better in a section on subsequent work that builds on Sketchpad.]
   </small>
 </section>
+
+<section>
+  <h2>Merging</h2>
+  <p>As we noted earlier in the User Interface section, Sketchpad supports a "merge" operation that allows two objects of the same type to be combined into a single object. Now that we've outlined other key concepts from Sketchpad, it's appropriate to dive deeper. For example, suppose we have a line segment with endpoints p1 and p2, and another with endpoints q1 and q2. We then merge p1 and q1, so that they are replaced with a single point. Thereafter the line two line segments are connected.</p>
+
+  <p>Merging p1 and q1 is similar in many respects to constraining p1 and q1 to be equal, but there are some important differences. Pragmatically, merging significantly simplifies constraint solving, since there are fewer constraints to be solved. It also reduces storage requirements. The semantics are different as well: if there is an unsatisfied constraint on each of the objects being merged, after merging there will be only one unsatisfied constraint contributing to the combined error; whereas if the two objects were constrained to be equal rather than merged, there would be two such constraints. Further, if the merged point p1/q1 were deleted, this would require that both lines be deleted; but this wouldn't be the case if they were just constrained to be equal.</p>
+
+  <p>Merging doesn't apply only to points — other Sketchpad objects could be merged as well, for example two lines, two arcs, or two instances of the same master. Merging is recursive, so that if two line segments are merged, their corresponding endpoints are merged as well.</p>
+
+  <p>Overall, merging seems like a powerful concept that could well be further explored in today's interfaces and systems.</p>
+
+</section>
+
+
 
 <section>
   <h2>PLACEHOLDER CONTENT</h2>
