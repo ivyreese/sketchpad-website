@@ -4,5 +4,63 @@ page-description: Where, when, and how<br> Sketchpad came into existence.
 ---
 
 <section>
-  <img src="/assets/girl.png">
+  <h2>Background</h2>
+
+  <p>In the early 1950s the US wanted to defend against Soviet bombers flying into the US. A Whirlwind computer was connected to a radar to see if it could generate the track of a bomber on a display. This was successful, and a massive project called SAGE began. Each of the 23 SAGE installations had an IBM AN/FSQ-7 computer, a successor to the Whirlwind. The computer was made of vacuum tubes and covered 22,000 square feet of floor space.</p>
+</section>
+
+<section>
+  <h2>The TX-0 and the TX-2</h2>
+
+  <p>The SAGE system was developed by Lincoln Labs near MIT. Lincoln had a research computer to test building a computer from transistors instead of vacuum tubes. The TX-0 was modified every week with improvements and new input/output devices. Wes Clark oversaw the development of a successor computer, the TX-2. It first ran in 1958 and was very powerful for the time. It had a magnetic core memory of 64,000 words with 36 bits each. The goal of the project was to test the feasibility of using transistors. Officially, the software was not specified, so many people from Lincoln Labs and MIT wrote a wide variety of programs for the TX-2.</p>
+</section>
+
+<section>
+  <h2>Display Technology</h2>
+
+  <p>Cathode ray tubes (CRTs) were used in the SAGE project as high quality radar screens. The electron beam put dots on a phosphor coating that left a fading image for a second. Radar screens did not display pictures. The TX-2 a more advanced display that was specially designed to be positionally accurate. It had 1024 by 1024 dot positions.</p>
+
+  <p>The "light gun" was invented for Whirlwind by Bob Everett, the co-developer of Whirlwind. The handheld pen detected when the beam of the display made a spot of light in front of the pen. A wire relayed this to the computer. MIT improved the light pen. XX wrote a program that allowed him to sign his name, and show the track of the pen on the display. It was possible to make simple drawings on the display.</p>
+
+  <p>There was a fair amount of graphics experimentation by 1962 — for example, the PDP-1 came out in 1961 with a DEC 340 display and light pen. SpaceWar appeared on it the same year as Sketchpad. At the same time, General Motors was doing many important things with DAC, their automotive CAD system (which worked directly in 3D). There were several other contemporary smaller efforts.</p>
+</section>
+
+<section>
+  <h2>User Interface</h2>
+
+  <p>Researchers understood that punched cards were not an ideal way to communicate with a program in a computer. People wrote about the "language barrier between man and machine" and the problem of "man-machine communication."  Several projects before SketchPad put graphical objects on the screen and allowed the user to move them with a light pen.</p>
+
+  <p>The TX-2 had knobs the move and zoom the display. It had a bank of 40 push buttons. The combination of a button held down and a pen movement let the user indicate an action. A program could sense a push button for an action, and cause the user's pen stroke to do that action.</p>
+
+  <p>Programs before SketchPad pioneered this kind of user interface, but no program offered a complete set of user actions over a specific domain.</p>
+</section>
+
+<section>
+  <h2>Constraints and Relaxation</h2>
+
+  <p>Ivan Sutherland wanted to create mechanical drawings on the computer. In addition, he wanted the program to improve the drawing by straightening lines, making lines horizontal, making arcs perfect, making a set of angles equal, or keeping the length of a line constant. These rules are called constraints.</p>
+
+  <p>Relaxation is a technique for satisfying constraints that engineers had been using since the late 1930s. If the drawing has a measure of the current error — how far it is from perfection, then move the endpoint of each line a little. If the drawing has a smaller error afterwards, keep the change. Engineers had been laboriously doing this on paper, calculating the error each time by hand. Sutherland wanted his program to do the work of satisfying the constraints. The TX-2 had the power to do these calculations.</p>
+</section>
+
+<section>
+  <h2>The Opportunity to Create SketchPad</h2>
+
+  <p>Ivan Sutherland studied electrical engineering at the Carnegie Institute of Technology. He got a masters degree at CalTech. He applied to work on a PhD at MIT, doing the work at Lincoln Labs. He was worried when he did not get a job offer, but finally Lincoln Labs confirmed that he had a job.</p>
+
+  <p>Sutherland had hated doing mechanical drawings with a pencil, and decided to make a system to create drawings on the computer. He got permission to use the TX-2.</p>
+
+  <p>He wrote programs on paper, and used punched cards or paper tape to enter them into the TX-2. Between 4 am and 6 am Sutherland ran his program and discovered the bugs. He had complete control of the TX-2, and used it as a personal computer.</p>
+
+  <p>As SketchPad took shape, Sutherland started over and completely redesigned his program three times. He moved from reproducing the ruler and tee-square of drafting to building complex objects out of sub-objects. Being able to build a working system three separate times allowed Sutherland to evolve SketchPad into a new kind of system. It was a complete system that provided the tools a user needed to design in 2D with constraints. SketchPad itself moved the objects to comply with the constraints. We now recognize a program where a user can compose a complex drawing as a "computer application" for creation.</p>
+</section>
+
+<section>
+  <h2>Citations</h2>
+
+  <ul>
+    <li>Wikipedia, SAGE, Whirlwind</li>
+    <li>Sutherland Thesis</li>
+    <li>Interview at the Computer History Museum</li>
+  </ul>
 </section>
